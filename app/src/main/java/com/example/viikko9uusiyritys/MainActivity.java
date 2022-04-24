@@ -14,6 +14,8 @@ public class MainActivity extends AppCompatActivity {
     Spinner teatteri;
     ListView listview;
 
+    //moi
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
