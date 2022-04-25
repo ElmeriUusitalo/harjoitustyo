@@ -16,30 +16,30 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-public class Teatterit {
-    protected static NodeList teatteri_node;
-    protected static ArrayList<Teatteri> teatteri_array;
-    protected static NodeList esitykset;
-    protected static ArrayList<Esitys> esitys_array = new ArrayList<Esitys>() ;
+public class ReadXML {
+    protected static NodeList theatre_node;
+    protected static ArrayList<Theatres> theatre_array;
+    protected static NodeList shows;
+    protected static ArrayList<Movie> shows_array = new ArrayList<Movie>() ;
 
-    public static void readXML() {
+    public static void readAreasXML() {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             String urlString = "https://www.finnkino.fi/xml/TheatreAreas/";
             Document doc = builder.parse(urlString);
             doc.getDocumentElement().normalize();
-            teatteri_node = doc.getDocumentElement().getElementsByTagName("TheatreArea");
+            theatre_node = doc.getDocumentElement().getElementsByTagName("TheatreArea");
             String ID;
             String paikka;
-            teatteri_array = new ArrayList<Teatteri>();
-            for (int i = 0; i < teatteri_node.getLength(); i++) {
-                Node node = teatteri_node.item(i);
+            theatre_array = new ArrayList<Theatres>();
+            for (int i = 0; i < theatre_node.getLength(); i++) {
+                Node node = theatre_node.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
                     ID = element.getElementsByTagName("ID").item(0).getTextContent();
                     paikka = element.getElementsByTagName("Name").item(0).getTextContent();
                     if (paikka.contains(":")) {
-                        teatteri_array.add(new Teatteri(ID, paikka));
+                        theatre_array.add(new Theatres(ID, paikka));
                     }
                 }
             }
@@ -52,8 +52,8 @@ public class Teatterit {
         }
     }
 
-    public static void readXML2(Teatteri valittu) {
-        esitys_array.clear();
+    public static void readscheduleXML(Theatres valittu) {
+        shows_array.clear();
         String paivays;
         SimpleDateFormat formatter= new SimpleDateFormat("dd.MM.yyyy");
         Date date = new Date(System.currentTimeMillis());
@@ -63,14 +63,14 @@ public class Teatterit {
             String urlString = "https://www.finnkino.fi/xml/Schedule/?area=" + valittu.ID + "&dt=" + paivays;
             Document doc = builder.parse(urlString);
             doc.getDocumentElement().normalize();
-            esitykset = doc.getDocumentElement().getElementsByTagName("Show");
+            shows = doc.getDocumentElement().getElementsByTagName("Show");
             String esityksennimi;
-            for (int i = 0; i < esitykset.getLength(); i++) {
-                Node node = esitykset.item(i);
+            for (int i = 0; i < shows.getLength(); i++) {
+                Node node = shows.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
                     esityksennimi = element.getElementsByTagName("Title").item(0).getTextContent();
-                    esitys_array.add(new Esitys(esityksennimi));
+                    shows_array.add(new Movie(esityksennimi));
 
                 }
             }

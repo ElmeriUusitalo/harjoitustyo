@@ -11,11 +11,12 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 public class MainActivity extends AppCompatActivity {
-    Spinner teatteri;
+    Spinner theatre;
     ListView listview;
 
-    //moi
 
+    //moi
+    //testiline
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,10 +24,10 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         listview = (ListView)findViewById(R.id.listview);
-        teatteri = findViewById(R.id.spinner);
-        Teatterit.readXML();
+        theatre = findViewById(R.id.spinner);
+        ReadXML.readAreasXML();
 
-        teatteri.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        theatre.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             valitseteatteri();
@@ -37,18 +38,18 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        ArrayAdapter<Teatteri> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Teatterit.teatteri_array);
+        ArrayAdapter<Theatres> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, ReadXML.theatre_array);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        teatteri.setAdapter(adapter);
+        theatre.setAdapter(adapter);
 
 
     }
 
 
     public void valitseteatteri() {
-        Teatteri valittu = (Teatteri) teatteri.getSelectedItem();
-        Teatterit.readXML2(valittu);
-        ArrayAdapter<Esitys> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Teatterit.esitys_array);
+        Theatres valittu = (Theatres) theatre.getSelectedItem();
+        ReadXML.readscheduleXML(valittu);
+        ArrayAdapter<Movie> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, ReadXML.shows_array);
         listview.setAdapter(adapter2);
     }
 
