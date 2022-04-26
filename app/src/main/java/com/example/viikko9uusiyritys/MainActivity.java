@@ -3,12 +3,14 @@ package com.example.viikko9uusiyritys;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 //import android.icu.util.Calendar;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
 import android.widget.AdapterView;
 
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private TextView date_text;
     private TextView start_time_text;
     private TextView end_time_text;
+    private Button open_user_activity_button;
 
     private ArrayList<Theatres> theatresArrayList;
     private ArrayList<Movie> movieArrayList = new ArrayList();
@@ -72,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         start_time_text = (TextView) findViewById(R.id.start_time_text);
         end_time_text = (TextView) findViewById(R.id.end_time_text);
         movieListView = (ListView) findViewById(R.id.movie_list_view);
+        open_user_activity_button = (Button) findViewById(R.id.user_button);
 
         //fetches the arraylist of theatres
         theatresArrayList = readXML.readAreasXML();
@@ -88,6 +92,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
+        open_user_activity_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openActivityUserData();
+            }
+        });
+
         //putting theatres on the spinner
         ArrayAdapter<Theatres> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, theatresArrayList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -98,7 +109,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
+    public void openActivityUserData(){
 
+        Intent intent = new Intent(this, UserData.class);
+        startActivity(intent);
+    }
 
 
     //searching for the movies
