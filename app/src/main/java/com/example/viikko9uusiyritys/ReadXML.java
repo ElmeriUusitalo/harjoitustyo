@@ -59,7 +59,7 @@ public class ReadXML {
         return theatre_array;
     }
 /*
-    public static void readscheduleXML(Theatres valittu) {
+    public static void readscheduleXML(Theatres theatre) {
         shows_array.clear();
         String paivays;
         SimpleDateFormat formatter= new SimpleDateFormat("dd.MM.yyyy");
@@ -67,7 +67,7 @@ public class ReadXML {
         paivays = (formatter.format(date));
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            String urlString = "https://www.finnkino.fi/xml/Schedule/?area=" + valittu.ID + "&dt=" + paivays;
+            String urlString = "https://www.finnkino.fi/xml/Schedule/?area=" + theatre.ID + "&dt=" + paivays;
             Document doc = builder.parse(urlString);
             doc.getDocumentElement().normalize();
             shows = doc.getDocumentElement().getElementsByTagName("Show");
