@@ -15,7 +15,11 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private Spinner theatre;
     private ListView listview;
+
+
+
     private ArrayList<Theatres> theatresArrayList;
+    private ArrayList<Movie> movie_list = new ArrayList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

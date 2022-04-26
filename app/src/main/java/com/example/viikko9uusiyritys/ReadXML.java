@@ -17,9 +17,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class ReadXML {
-    protected static NodeList theatre_node;
-    protected static NodeList shows;
-    protected static ArrayList<Movie> shows_array = new ArrayList<Movie>() ;
+    private NodeList theatre_node;
+    private NodeList shows;
+    private ArrayList<Movie> shows_array = new ArrayList<Movie>() ;
 
     //reads xml and returns ArrayList<Theatres>
     public ArrayList<Theatres> readAreasXML() {
