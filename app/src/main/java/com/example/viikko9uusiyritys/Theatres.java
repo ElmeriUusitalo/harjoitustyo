@@ -1,12 +1,12 @@
 package com.example.viikko9uusiyritys;
 
 public class Theatres {
-    protected final String place;
-    protected final String ID;
+    private String place;
+    private int id;
 
-    public Theatres(String n, String m) {
-        ID = n;
-        place = m;
+    public Theatres(String id, String place) {
+        this.id = Integer.parseInt(id);
+        this.place = place;
     }
 
     @Override

@@ -18,31 +18,37 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class ReadXML {
     protected static NodeList theatre_node;
-    protected static ArrayList<Theatres> theatre_array;
     protected static NodeList shows;
     protected static ArrayList<Movie> shows_array = new ArrayList<Movie>() ;
 
-    public static void readAreasXML() {
+    //reads xml and returns ArrayList<Theatres>
+    public ArrayList<Theatres> readAreasXML() {
+        //variables
+        String paikka;
+        String urlString = "https://www.finnkino.fi/xml/TheatreAreas/";
+        ArrayList<Theatres> theatre_array = new ArrayList<>();
+
         try {
+
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            String urlString = "https://www.finnkino.fi/xml/TheatreAreas/";
             Document doc = builder.parse(urlString);
             doc.getDocumentElement().normalize();
             theatre_node = doc.getDocumentElement().getElementsByTagName("TheatreArea");
-            String ID;
-            String paikka;
-            theatre_array = new ArrayList<Theatres>();
+
             for (int i = 0; i < theatre_node.getLength(); i++) {
                 Node node = theatre_node.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
-                    ID = element.getElementsByTagName("ID").item(0).getTextContent();
+                    String ID = element.getElementsByTagName("ID").item(0).getTextContent();
                     paikka = element.getElementsByTagName("Name").item(0).getTextContent();
                     if (paikka.contains(":")) {
                         theatre_array.add(new Theatres(ID, paikka));
                     }
                 }
             }
+
+
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SAXException e) {
@@ -50,8 +56,9 @@ public class ReadXML {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
+        return theatre_array;
     }
-
+/*
     public static void readscheduleXML(Theatres valittu) {
         shows_array.clear();
         String paivays;
@@ -81,5 +88,5 @@ public class ReadXML {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
