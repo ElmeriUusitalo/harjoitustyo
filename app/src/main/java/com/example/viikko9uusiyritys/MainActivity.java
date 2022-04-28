@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         user_list = loadUserList(user_list);
 
 
-        prompt_text.setText("All movies:");
+        prompt_text.setText("MOVIES:");
         //loadMovies();
         getAllMovies();
         //saveMovies();

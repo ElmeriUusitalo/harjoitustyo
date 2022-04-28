@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/main_prompt"
         android:layout_width="271dp"
-        android:layout_height="28dp"
+        android:layout_height="wrap_content"
         android:text="Valitse teatteri"
         android:textSize="12pt"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -52,6 +52,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.797" />
+
+
 
     <TextView
         android:id="@+id/start_time_text"
