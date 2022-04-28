@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:onClick="valitseteatteri"
+
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/main_prompt"
         android:layout_width="271dp"
         android:layout_height="28dp"
         android:text="Valitse teatteri"
+        android:textSize="12pt"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.242"
@@ -20,7 +21,7 @@
         app:layout_constraintVertical_bias="0.042" />
 
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/theatre_spinner"
         android:layout_width="358dp"
         android:layout_height="61dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -30,7 +31,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.134" />
 
-    <ListView
+    <!--ListView
         android:id="@+id/movie_list_view"
         android:layout_width="342dp"
         android:layout_height="159dp"
@@ -39,30 +40,39 @@
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.972" />
+        app:layout_constraintVertical_bias="0.972" /-->
+
+    <Spinner
+        android:id="@+id/movie_spinner"
+        android:layout_width="358dp"
+        android:layout_height="61dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.797" />
 
     <TextView
         android:id="@+id/start_time_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/listview"
+        android:layout_margin="20dp"
+
+        app:layout_constraintBottom_toTopOf="@+id/star_time"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.216"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner"
-        app:layout_constraintVertical_bias="0.498" />
+        app:layout_constraintStart_toStartOf="parent" />
+
 
     <TextView
         android:id="@+id/end_time_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="112dp"
-        app:layout_constraintBottom_toTopOf="@+id/listview"
+        android:layout_margin="20dp"
+        android:layout_marginBottom="407dp"
+        app:layout_constraintBottom_toTopOf="@+id/end_time"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/start_time_text"
-        app:layout_constraintTop_toBottomOf="@+id/spinner"
-        app:layout_constraintVertical_bias="0.496" />
+        app:layout_constraintStart_toEndOf="@+id/start_time_text" />
 
     <Button
         android:id="@+id/star_time"
@@ -72,7 +82,7 @@
         android:layout_marginBottom="60dp"
         android:onClick="startTime"
         android:text="start time"
-        app:layout_constraintBottom_toTopOf="@+id/movie_list_view"
+        app:layout_constraintBottom_toTopOf="@+id/movie_spinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -80,11 +90,11 @@
         android:id="@+id/end_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
         android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="60dp"
         android:onClick="endTime"
         android:text="end time"
-        app:layout_constraintBottom_toTopOf="@+id/movie_list_view"
+        app:layout_constraintBottom_toTopOf="@+id/movie_spinner"
         app:layout_constraintStart_toEndOf="@+id/star_time" />
 
     <Button
@@ -96,7 +106,7 @@
         android:layout_marginBottom="60dp"
         android:onClick="pickDate"
         android:text="date"
-        app:layout_constraintBottom_toTopOf="@+id/movie_list_view"
+        app:layout_constraintBottom_toTopOf="@+id/movie_spinner"
         app:layout_constraintEnd_toStartOf="@+id/star_time" />
 
     <Button
@@ -104,33 +114,57 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="168dp"
-        android:onClick="MovieSearch"
+        android:onClick="movieSearchByTheatre"
         android:text="search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/theatre_spinner" />
+
 
     <Button
+        android:id="@+id/switch_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/user_button"
-        android:text="User settings"
+        android:layout_marginTop="60dp"
+        android:text="show theatres"
         app:layout_constraintBottom_toTopOf="@+id/search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/theatre_spinner" />
+
+    <Button
+        android:id="@+id/user_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User settings"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="40dp"/>
 
     <TextView
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/spinner"
+        app:layout_constraintBottom_toTopOf="@+id/theatre_spinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Give rating"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+
     <!--
     <TextView
         android:id="@+id/textView3"

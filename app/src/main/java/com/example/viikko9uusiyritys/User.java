@@ -1,6 +1,8 @@
 package com.example.viikko9uusiyritys;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private String username;
     private String password;
     private int age;
@@ -18,16 +20,28 @@ public class User {
         this.age = age;
     }
 
+
+    public boolean isSameUsername(String username){
+        if(this.username.equals(username)) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
     public String getUsername(){
         return this.username;
     }
 
     //not secure way, but better than getter :)
-    public int checkPassword(String password){
-        if(this.password == password){
-            return 1;
+    public boolean checkPassword(String password){
+        if(this.password.equals(password)){
+            return true;
         } else {
-             return 0;
+             return false;
         }
     }
+
+
 }
