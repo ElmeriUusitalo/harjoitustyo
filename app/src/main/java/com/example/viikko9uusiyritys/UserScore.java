@@ -1,6 +1,8 @@
 package com.example.viikko9uusiyritys;
 
-public class UserScore {
+import java.io.Serializable;
+
+public class UserScore implements Serializable {
     private String comment;
     private int rating;
     private String name_of_user;

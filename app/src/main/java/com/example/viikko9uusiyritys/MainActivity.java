@@ -13,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -39,17 +38,24 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+
+
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener  {
-    private Spinner theatre_spinner;
-    //private Spinner movie_spinner;
-    private ListView listview;
-    private ListView movieListView;
+    enum SpinnerState{
+        MOVIES,
+        THEATRES,
+    }
+
+    SpinnerState spinner_state = SpinnerState.MOVIES;
+
+    private Spinner main_spinner;
     private TextView date_text;
     private TextView start_time_text;
     private TextView end_time_text;
     private Button open_user_activity_button;
     private Button switch_spinner;
     private Button give_rating;
+    private Button read_rating;
     private TextView prompt_text;
 
     private ArrayList<Theatres> theatres_array_list;
@@ -57,13 +63,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ArrayList<Movie> all_movies_list = new ArrayList();
     private ArrayList<User> user_list;
 
-    private int selectedSpinnerIndex;
+    private int selected_spinner_index;
     private String date_given_by_user;
     private int timer_selected;
     private int start_time = 9999;
     private int end_time = 9999;
 
-    private int spinner = 1;
+
+
+
+
+    private User user;
 
 
     @Override
@@ -84,17 +94,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         StrictMode.setThreadPolicy(policy);
 
         //Setting id's
-        //listview = (ListView)findViewById(R.id.);
-        theatre_spinner = findViewById(R.id.theatre_spinner);
-        //movie_spinner = findViewById(R.id.movie_spinner);
+
+        main_spinner = findViewById(R.id.theatre_spinner);
+
         date_text = (TextView) findViewById(R.id.date);
         start_time_text = (TextView) findViewById(R.id.start_time_text);
         end_time_text = (TextView) findViewById(R.id.end_time_text);
-        //movieListView = (ListView) findViewById(R.id.movie_list_view);
-        open_user_activity_button = (Button) findViewById(R.id.user_button);
         prompt_text = (TextView) findViewById(R.id.main_prompt);
+
+        open_user_activity_button = (Button) findViewById(R.id.user_button);
         switch_spinner = (Button) findViewById(R.id.switch_button);
-        give_rating = (Button) findViewById(R.id.rating);
+        give_rating = (Button) findViewById(R.id.give_rating);
+        read_rating = (Button) findViewById(R.id.read_rating);
 
         ReadXML readXML = new ReadXML();
 
@@ -105,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //loadMovies();
         getAllMovies();
         //saveMovies();
-        setMovie_spinner();
+        setMovieSpinner();
 
 
 
@@ -115,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //fetches the arraylist of theatres
         theatres_array_list = readXML.readAreasXML();
 
-        theatre_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        main_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 //valitseteatteri();
@@ -130,7 +141,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         give_rating.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setRating();
+                if(user == null){
+                    prompt_text.setText("Please log in first!");
+                } else if (spinner_state == SpinnerState.MOVIES) {
+                    openActivityRateMovie();
+                } else {
+                    prompt_text.setText("Please select a movie first!");
+                }
+            }
+        });
+
+
+        read_rating.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openActivityReadRating();
             }
         });
 
@@ -149,37 +174,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
 
         //setTheatre_spinner();
-    }
 
-    private void setRating(){
 
     }
+    //opens the rating giving activity
+    private void openActivityRateMovie(){
+        Intent intent2 = new Intent(this, RateMovie.class);
 
-    private void changeSpinner(){
-        if(spinner == 1){
-            setTheatre_spinner();
-            prompt_text.setText("THEATRES:");
-            switch_spinner.setText("Show movies");
-            spinner = 0;
-        } else {
-            setMovie_spinner();
-            prompt_text.setText("MOVIES:");
-            switch_spinner.setText("Show theatres");
-            spinner = 1;
-        }
+        intent2.putExtra("username", user.getUsername());
+
+        intent2.putExtra("movie", all_movies_list.get(selected_spinner_index));
+
+        startActivityForResult(intent2, 2);
     }
 
-    private void setMovie_spinner(){
-        ArrayAdapter<Movie> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, all_movies_list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        theatre_spinner.setAdapter(adapter);
-    }
-
-    private void setTheatre_spinner(){
-        //putting theatres on the spinner
-        ArrayAdapter<Theatres> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, theatres_array_list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        theatre_spinner.setAdapter(adapter);
+    //opens activity for reading ratings
+    private void openActivityReadRating(){
+        Intent intent3 = new Intent(this, ReadRatings.class);
+        intent3.putExtra("movie", all_movies_list.get(selected_spinner_index));
+        startActivity(intent3);
     }
 
     //opens activity for logging and signing in
@@ -190,15 +203,70 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         startActivityForResult(intent, 1);
     }
 
+
+    //information from the activities
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        User user = (User) data.getSerializableExtra("user");
-        prompt_text.setText(user.getUsername() + "has logged in.");
+        //User activity
+        if(requestCode == 1) {
+            user = (User) data.getSerializableExtra("user");
+            prompt_text.setText(user.getUsername() + "has logged in.");
+        }
+
+        //Rating activity
+        if(requestCode == 2){
+            if(/*resultCode == RESULT_OK*/true){
+                try{
+                Movie movie = (Movie) data.getSerializableExtra("movie");
+                all_movies_list.set(selected_spinner_index, movie);
+                prompt_text.setText("Movie has been rated!");}
+
+                catch (NullPointerException e)  {e.printStackTrace();}
+            }
+            if(resultCode == RESULT_CANCELED){
+                prompt_text.setText("Rating failed");
+            }
+
+        }
+
+
     }
 
-    //loads users into a list
+
+    private void changeSpinner(){
+        if(spinner_state == SpinnerState.MOVIES){
+            setTheatre_spinner();
+            prompt_text.setText("THEATRES:");
+            switch_spinner.setText("Show movies");
+            spinner_state = SpinnerState.THEATRES;
+        } else {
+            setMovieSpinner();
+            prompt_text.setText("MOVIES:");
+            switch_spinner.setText("Show theatres");
+            spinner_state = SpinnerState.MOVIES;
+        }
+    }
+
+    private void setMovieSpinner(){
+        ArrayAdapter<Movie> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, all_movies_list);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        main_spinner.setAdapter(adapter);
+    }
+
+    private void setTheatre_spinner(){
+        //putting theatres on the spinner
+        ArrayAdapter<Theatres> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, theatres_array_list);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        main_spinner.setAdapter(adapter);
+    }
+
+
+
+
+
+    //loads users into a arraylist
     public ArrayList<User> loadUserList(ArrayList<User> user_list){
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -217,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         all_movies_list = gson.fromJson(json, type);
     }
 
-    //saves all movies from gson
+    //saves all movies to gson
     public void saveMovies() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -289,12 +357,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     //searching for the movies based on theatres
     public void movieSearchByTheatre(View v){
         //date_text.setText(theatre_list.get(selectedTheatreIndex).getId());
-        String id = theatres_array_list.get(selectedSpinnerIndex).getId();
+        String id = theatres_array_list.get(selected_spinner_index).getId();
         String title;
         String time;
 
 
-        prompt_text.setText(theatres_array_list.get(selectedSpinnerIndex).getName());
+        prompt_text.setText(theatres_array_list.get(selected_spinner_index).getName());
 
 
 
@@ -359,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
             ArrayAdapter<Movie> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, movies_by_time);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            theatre_spinner.setAdapter(adapter);
+            main_spinner.setAdapter(adapter);
             /*
             ArrayAdapter<Movie> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, movieArrayList);
 
@@ -379,10 +447,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
-    //selecting theatre
+    //spinner index
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        selectedSpinnerIndex = position;
+        selected_spinner_index = position;
+
 
     }
 
