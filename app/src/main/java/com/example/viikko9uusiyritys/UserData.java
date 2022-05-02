@@ -25,6 +25,7 @@ public class UserData extends AppCompatActivity {
     private EditText password;
     private TextView prompt_text;
     private ArrayList<User> user_list = new ArrayList<>();
+    Intent resultIntent = new Intent();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,8 @@ public class UserData extends AppCompatActivity {
         password = (EditText) findViewById(R.id.password_input);
         prompt_text = (TextView) findViewById(R.id.user_prompt);
 
+
+        //loads user list
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("user list", null);
@@ -79,10 +82,10 @@ public class UserData extends AppCompatActivity {
         for(final User user : user_list){
             if(user.isSameUsername(name)){
                 if(user.checkPassword(pass)){
-                    Intent resultIntent = new Intent();
+
                     resultIntent.putExtra("user", user);
 
-                    setResult(RESULT_OK, resultIntent);
+
 
                     pass_correct = true;
                 }
@@ -96,7 +99,9 @@ public class UserData extends AppCompatActivity {
             prompt_text.setText("User not found. Please sign up!");
         }
         if (name_found == true && pass_correct == true){
+
             prompt_text.setText("Welcome " + name + "!");
+            setResult(RESULT_OK, resultIntent);
         }
         if (name_found == true && pass_correct == false){
             prompt_text.setText("Password is not correct!");
@@ -115,6 +120,8 @@ public class UserData extends AppCompatActivity {
             }
 
         }
+
+
 
         User user = new User(username.getText().toString(), password.getText().toString());
         //System.out.println(username.getText().toString() + password.getText().toString());
@@ -137,6 +144,8 @@ public class UserData extends AppCompatActivity {
         editor.putString("user list", json);
         editor.apply();
     }
+
+
 
 
 

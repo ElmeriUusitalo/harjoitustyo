@@ -38,12 +38,13 @@ public class RateMovie extends AppCompatActivity implements AdapterView.OnItemSe
         spinner = (Spinner) findViewById(R.id.rate_movie_spinner);
         text_prompt = (TextView) findViewById(R.id.rate_movie_text_view);
         submit_button = (Button) findViewById(R.id.submit_rating_button);
-        rating_box = (EditText) findViewById(R.id.comment_edittext);
+        //rating_box = (EditText) findViewById(R.id.comment_edittext);
 
 
         Bundle extras = getIntent().getExtras();
         username = extras.getString("username");
         movie = (Movie) extras.getSerializable("movie");
+        text_prompt.setText(movie.getTitle());
 
 
 
@@ -63,11 +64,23 @@ public class RateMovie extends AppCompatActivity implements AdapterView.OnItemSe
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Bundle extras = getIntent().getExtras();
+        username = extras.getString("username");
+        movie = (Movie) extras.getSerializable("movie");
+        text_prompt.setText(movie.getTitle());
+
+    }
+
     public void setRating(){
-        String comment = rating_box.getText().toString();
 
 
+        movie.addStar(rating_number);
 
+
+        /*
         //checks which constructor should be used
         if(comment.isEmpty()){
             user_score = new UserScore(rating_number, username);
@@ -76,8 +89,11 @@ public class RateMovie extends AppCompatActivity implements AdapterView.OnItemSe
             user_score = new UserScore(rating_number, username, comment);
         }
         movie.addRating(user_score);
-        resultIntent.putExtra("movie", movie);
 
+         */
+        resultIntent.putExtra("movie", movie);
+        setResult(RESULT_OK, resultIntent);
+        finish();
 
 
     }
@@ -86,7 +102,7 @@ public class RateMovie extends AppCompatActivity implements AdapterView.OnItemSe
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         rating_number = i+1;
-        text_prompt.setText(""+ rating_number);
+        //text_prompt.setText(""+ rating_number);
     }
 
     @Override
