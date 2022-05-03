@@ -45,7 +45,7 @@ public class UserData extends AppCompatActivity {
         try{
             SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
             Gson gson = new Gson();
-            String json = sharedPreferences.getString("user list", null);
+            String json = sharedPreferences.getString("user list 2", null);
             Type type = new TypeToken<ArrayList<User>>() {}.getType();
             user_list = gson.fromJson(json, type);
         } catch (NullPointerException e) {e.printStackTrace();
@@ -144,7 +144,7 @@ public class UserData extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json = gson.toJson(user_list);
-        editor.putString("user list", json);
+        editor.putString("user list 2", json);
         editor.apply();
     }
 
