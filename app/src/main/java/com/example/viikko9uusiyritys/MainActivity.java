@@ -109,6 +109,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         read_rating = (Button) findViewById(R.id.read_rating);
         save = (Button) findViewById(R.id.save_button);
 
+
+
         spinner_state = 0;
 
 
@@ -129,7 +131,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         getAllMovies();
         saveMovies();
+        loadMovies();
+
         setMovieSpinner();
+
 
 
 
@@ -339,10 +344,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void setMovieSpinner(){
-        ArrayAdapter<Movie> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, all_movies_list);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        main_spinner.setAdapter(adapter);
+        try{
+            ArrayAdapter<Movie> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, all_movies_list);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            main_spinner.setAdapter(adapter);
+            } catch (NullPointerException e){
+                {e.printStackTrace();
+            }
+        }
     }
+
 
     private void setTheatreSpinner(){
         //putting theatres on the spinner
@@ -372,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Type type = new TypeToken<ArrayList<User>>() {
             }.getType();
             user_list = gson.fromJson(json, type);
-            return user_list;
+
         } catch (NullPointerException e) {e.printStackTrace();
         } finally {
             return user_list;
@@ -384,11 +395,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         try {
             SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
             Gson gson = new Gson();
-            String json = sharedPreferences.getString("all movies", null);
+            String json = sharedPreferences.getString("all_movies_1", null);
             Type type = new TypeToken<ArrayList<Movie>>() {
             }.getType();
             all_movies_list = gson.fromJson(json, type);
-        } catch (NullPointerException e) {e.printStackTrace();
+        } catch (NullPointerException e)
+            {e.printStackTrace();
         }
     }
 
@@ -398,15 +410,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json = gson.toJson(all_movies_list);
-        editor.putString("all movies", json);
+        editor.putString("all_movies_1", json);
         editor.apply();
     }
 
     //Gets all current movies from finnkino's website
     public void getAllMovies() {
-        String url = "https://www.finnkino.fi/xml/Events/";
-        DocumentBuilder builder = null;
+
         try {
+
+            String url = "https://www.finnkino.fi/xml/Events/";
+            DocumentBuilder builder = null;
             builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
             Document doc = builder.parse(url);
@@ -416,7 +430,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             NodeList node_list = doc.getElementsByTagName("Event");
 
-
             for (int i = 0; i < node_list.getLength();i++){
                 boolean found = false;
                 Node node = node_list.item(i);
@@ -424,27 +437,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if(node.getNodeType() == node.ELEMENT_NODE) {
 
                     Element element = (Element) node;
-                    if(all_movies_list != null){
-                    //if(!all_movies_list.isEmpty()) {
-                        for(Movie movieWithTime : all_movies_list){
-                            String name = movieWithTime.getTitle();
-                            //System.out.println("Listalta löytyy nimi: " + name);
-                            //System.out.println("Ja xml löytyy nimi: " + element.getElementsByTagName("Title").item(0).getTextContent());
-                            if(name.equals(element.getElementsByTagName("Title").item(0).getTextContent())){
-                                found = true;
+                    if((all_movies_list != null) && !all_movies_list.isEmpty()){
+
+                            for(Movie movieWithTime : all_movies_list){
+                                String name = movieWithTime.getTitle();
+                                //System.out.println("Listalta löytyy nimi: " + name);
+                                //System.out.println("Ja xml löytyy nimi: " + element.getElementsByTagName("Title").item(0).getTextContent());
+                                if(name.equals(element.getElementsByTagName("Title").item(0).getTextContent())){
+                                    found = true;
+                                }
                             }
-                        }
+
                     } else {
-                        found = true;
+                        all_movies_list = new ArrayList<Movie>();
                     }
-                    /*for(Movie movieWithTime : all_movies_list){
-                        String name = movieWithTime.getTitle();
-                        //System.out.println("Listalta löytyy nimi: " + name);
-                        //System.out.println("Ja xml löytyy nimi: " + element.getElementsByTagName("Title").item(0).getTextContent());
-                        if(name.equals(element.getElementsByTagName("Title").item(0).getTextContent())){
-                            found = true;
-                        }
-                    }*/
+                    System.out.println(found);
 
 
                     if (!found){
@@ -471,8 +478,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } catch (SAXException e) {
             e.printStackTrace();
         }
-
     }
+
+
 
 
     //searching for the movies based on theatres
