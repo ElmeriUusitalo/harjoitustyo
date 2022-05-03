@@ -125,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
         loadMovies();
+
+
         getAllMovies();
 
         setMovieSpinner();
@@ -363,21 +365,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     //loads users into a arraylist
     public ArrayList<User> loadUserList(ArrayList<User> user_list){
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("user list", null);
-        Type type = new TypeToken<ArrayList<User>>() {}.getType();
-        user_list = gson.fromJson(json, type);
-        return user_list;
+        try {
+            SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+            Gson gson = new Gson();
+            String json = sharedPreferences.getString("user list", null);
+            Type type = new TypeToken<ArrayList<User>>() {
+            }.getType();
+            user_list = gson.fromJson(json, type);
+            return user_list;
+        } catch (NullPointerException e) {e.printStackTrace();
+        }
     }
 
     //load all movies from gson
     public void loadMovies(){
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("all movies", null);
-        Type type = new TypeToken<ArrayList<Movie>>() {}.getType();
-        all_movies_list = gson.fromJson(json, type);
+        try {
+            SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+            Gson gson = new Gson();
+            String json = sharedPreferences.getString("all movies", null);
+            Type type = new TypeToken<ArrayList<Movie>>() {
+            }.getType();
+            all_movies_list = gson.fromJson(json, type);
+        } catch (NullPointerException e) {e.printStackTrace();
+        }
     }
 
     //saves all movies to gson
@@ -408,7 +418,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             for (int i = 0; i < node_list.getLength();i++){
                 boolean found = false;
                 Node node = node_list.item(i);
-                System.out.println(node.getNodeName());
+                //System.out.println(node.getNodeName());
                 if(node.getNodeType() == node.ELEMENT_NODE) {
 
                     Element element = (Element) node;

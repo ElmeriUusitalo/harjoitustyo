@@ -42,11 +42,14 @@ public class UserData extends AppCompatActivity {
 
 
         //loads user list
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("user list", null);
-        Type type = new TypeToken<ArrayList<User>>() {}.getType();
-        user_list = gson.fromJson(json, type);
+        try{
+            SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+            Gson gson = new Gson();
+            String json = sharedPreferences.getString("user list", null);
+            Type type = new TypeToken<ArrayList<User>>() {}.getType();
+            user_list = gson.fromJson(json, type);
+        } catch (NullPointerException e) {e.printStackTrace();
+        }
 
         if (user_list == null) {
             user_list = new ArrayList<>();
