@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
         getAllMovies();
-
+        saveMovies();
         setMovieSpinner();
 
 
@@ -374,6 +374,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             user_list = gson.fromJson(json, type);
             return user_list;
         } catch (NullPointerException e) {e.printStackTrace();
+        } finally {
+            return user_list;
         }
     }
 
@@ -422,14 +424,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if(node.getNodeType() == node.ELEMENT_NODE) {
 
                     Element element = (Element) node;
-                    for(Movie movieWithTime : all_movies_list){
+                    if(all_movies_list != null){
+                    //if(!all_movies_list.isEmpty()) {
+                        for(Movie movieWithTime : all_movies_list){
+                            String name = movieWithTime.getTitle();
+                            //System.out.println("Listalta löytyy nimi: " + name);
+                            //System.out.println("Ja xml löytyy nimi: " + element.getElementsByTagName("Title").item(0).getTextContent());
+                            if(name.equals(element.getElementsByTagName("Title").item(0).getTextContent())){
+                                found = true;
+                            }
+                        }
+                    } else {
+                        found = true;
+                    }
+                    /*for(Movie movieWithTime : all_movies_list){
                         String name = movieWithTime.getTitle();
                         //System.out.println("Listalta löytyy nimi: " + name);
                         //System.out.println("Ja xml löytyy nimi: " + element.getElementsByTagName("Title").item(0).getTextContent());
                         if(name.equals(element.getElementsByTagName("Title").item(0).getTextContent())){
                             found = true;
                         }
-                    }
+                    }*/
+
 
                     if (!found){
                         String name_of_movie = element.getElementsByTagName("Title").item(0).getTextContent();
